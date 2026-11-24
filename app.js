@@ -31,7 +31,7 @@ const patients = [
 
 //Test
 app.get('/', (req, res) => {
-  res.json({ message: 'Hello from GlucoCare API!' });
+  res.json({ message: 'Hello from GlucoCare API!' })
 });
 
 // Listar todos los pacientes
