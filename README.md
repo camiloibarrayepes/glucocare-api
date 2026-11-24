@@ -26,14 +26,26 @@ npm test         # ejecuta las pruebas
 npm run lint     # análisis estático del código con ESLint
 ```
 
+## Endpoints
+
+| Método | Ruta | Descripción |
+| ------ | ---- | ----------- |
+| GET | `/` | Mensaje de bienvenida |
+| GET | `/patients` | Listar pacientes |
+| GET | `/patients/:id` | Ver un paciente con sus datos |
+| GET | `/patients/:id/insulin-shots` | Ver dosis de insulina |
+| GET | `/patients/:id/medications` | Ver medicamentos |
+
+Los datos se guardan en memoria, se pierden al reiniciar el servidor.
+
 ## Pipeline de CI
 
 En cada push o pull request a `main`, GitHub Actions:
 
-1. Descarga el código
-2. Instala Node.js
-3. Instala las dependencias
-4. Ejecuta el linter
-5. Ejecuta las pruebas
+1. Descarga el código usando actions/checkout@v5
+2. Instala Node.js usando actions/setup-node@v5
+3. Instala las dependencias usando npm ci
+4. Ejecuta el linter usando npm run lint
+5. Ejecuta las pruebas usando npm test
 
 Si el linter o las pruebas fallan, el pipeline falla.
