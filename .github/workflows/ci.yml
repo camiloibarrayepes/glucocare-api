@@ -30,7 +30,7 @@ jobs:
 
       # 4. Análisis estático (opcional en la rúbrica, suma puntos)
       - name: Linter (análisis estático)
-        run: npx eslint . || true
+        run:  npm run lint
 
       # 5. Ejecución de pruebas
       - name: Ejecutar pruebas
