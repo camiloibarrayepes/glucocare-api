@@ -10,6 +10,9 @@ const patients = [
     insulinShots: [
       { id: 1, units: 10, type: 'Rápida', datetime: '2026-11-20T08:00:00.000Z' },
       { id: 2, units: 8, type: 'Rápida', datetime: '2026-11-20T20:00:00.000Z' },
+    ],
+    medications: [
+      { id: 1, name: 'Metformina', dose: '500mg' },
     ]
   },
   {
@@ -22,7 +25,7 @@ const patients = [
     medications: [
       { id: 1, name: 'Metformina', dose: '850mg' },
       { id: 2, name: 'Glibenclamida', dose: '5mg' },
-    ],
+    ]
   },
 ];
 
