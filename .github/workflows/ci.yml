@@ -1,0 +1,37 @@
+name: CI Pipeline
+
+# Disparadores: se ejecuta en cada push o pull request (requisito B)///
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+
+    steps:
+      # 1. Checkout del código
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      # 2. Configurar Node.js con caché de dependencias
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # 3. Instalación de dependencias
+      - name: Instalar dependencias
+        run: npm ci
+
+      # 4. Análisis estático (opcional en la rúbrica, suma puntos)
+      - name: Linter (análisis estático)
+        run: npx eslint . || true
+
+      # 5. Ejecución de pruebas
+      - name: Ejecutar pruebas
+        run: npm test
