@@ -52,11 +52,15 @@ pipeline {
                         variable: 'GCP_ACCESS_TOKEN'
                     )
                 ]) {
-                    sh '''
+                        sh '''
     set +x
 
-    # Use an isolated configuration outside the Docker build context.
+    # Isolate registry credentials from the workstation configuration.
     export DOCKER_CONFIG="${WORKSPACE_TMP}/docker-config"
+
+    # Explicitly select the Docker Desktop daemon on macOS.
+    export DOCKER_HOST="unix://${HOME}/.docker/run/docker.sock"
+
     mkdir -p "$DOCKER_CONFIG"
 
     printf '%s' "$GCP_ACCESS_TOKEN" | docker login \
