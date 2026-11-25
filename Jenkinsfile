@@ -53,30 +53,35 @@ pipeline {
                     )
                 ]) {
                     sh '''
-                        set +x
+    set +x
 
-                        printf '%s' "$GCP_ACCESS_TOKEN" | docker login \
-                          "$REGISTRY" \
-                          --username oauth2accesstoken \
-                          --password-stdin
+    # Use an isolated configuration outside the Docker build context.
+    export DOCKER_CONFIG="${WORKSPACE_TMP}/docker-config"
+    mkdir -p "$DOCKER_CONFIG"
 
-                        docker push "$IMAGE:$IMAGE_TAG"
-                        docker push "$IMAGE:$BUILD_TAG"
-                    '''
+    printf '%s' "$GCP_ACCESS_TOKEN" | docker login \
+      "$REGISTRY" \
+      --username oauth2accesstoken \
+      --password-stdin
+
+    docker push "$IMAGE:$IMAGE_TAG"
+    docker push "$IMAGE:$BUILD_TAG"
+'''
                 }
             }
         }
     }
 
     post {
-        always {
-            sh '''
-                docker logout "$REGISTRY" || true
-            '''
-        }
-
-        success {
-            echo "Published $IMAGE:$IMAGE_TAG and $IMAGE:$BUILD_TAG"
-        }
+    always {
+        sh '''
+            export DOCKER_CONFIG="${WORKSPACE_TMP}/docker-config"
+            docker logout "$REGISTRY" || true
+        '''
     }
+
+    success {
+        echo "Published $IMAGE:$IMAGE_TAG and $IMAGE:$BUILD_TAG"
+    }
+}
 }
