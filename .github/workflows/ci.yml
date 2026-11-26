@@ -32,15 +32,25 @@ jobs:
       - name: Linter (análisis estático)
         run:  npm run lint
 
-      # 5. Ejecución de pruebas con cobertura
-      - name: Ejecutar pruebas con cobertura
-        run: npm test -- --coverage
+      # 5. Ejecución de pruebas
+      - name: Ejecutar pruebas
+        run: npm test
+      
+      # 6. Organizar reporte de cobertura
+      - name: Organizar reporte
+        if: always()
+        run: |
+          REPORT_DATE=$(date -u +'%Y-%m-%d_%H-%M-%S')
+          mkdir -p reports/$REPORT_DATE
+          if [ -d coverage ]; then
+            cp -r coverage reports/$REPORT_DATE/
+          fi
 
-      # 6. Publicación del reporte
+      # 7. Publicación del reporte
       - name: Publicar reporte de cobertura
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-coverage
-          path: coverage/
+          name: test-coverage-${{ github.run_id }}
+          path: reports/
           retention-days: 7
