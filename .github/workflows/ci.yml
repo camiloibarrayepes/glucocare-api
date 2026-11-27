@@ -59,7 +59,7 @@ jobs:
       # 8. Análisis de calidad con SonarQube
       - name: SonarQube Scan
         if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
-        uses: SonarSource/sonarqube-scan-action@v8.5.1
+        uses: SonarSource/sonarqube-scan-action@70bad232163b09d998ea0707ee80c0ec80798c16 # v8.5.1
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
