@@ -34,7 +34,7 @@ jobs:
 
       # 5. Ejecución de pruebas
       - name: Ejecutar pruebas
-        run: npm test
+        run: npm test -- --coverage
       
       # 6. Organizar reporte de cobertura
       - name: Organizar reporte
