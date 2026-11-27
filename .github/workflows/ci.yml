@@ -1,6 +1,6 @@
 name: CI Pipeline
 
-# Disparadores: se ejecuta en cada push o pull request (requisito B)///
+# Disparadores: se ejecuta en cada push o pull request (requisito B)
 on:
   push:
     branches: [main]
@@ -11,11 +11,12 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-
     steps:
       # 1. Checkout del código
       - name: Checkout del repositorio
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # Historial completo para SonarQube; evaluar su impacto en el rendimiento a medida que crezca el repositorio.
 
       # 2. Configurar Node.js con caché de dependencias
       - name: Configurar Node.js
@@ -30,12 +31,12 @@ jobs:
 
       # 4. Análisis estático (opcional en la rúbrica, suma puntos)
       - name: Linter (análisis estático)
-        run:  npm run lint
+        run: npm run lint
 
-      # 5. Ejecución de pruebas
+      # 5. Ejecución de pruebas con cobertura
       - name: Ejecutar pruebas
         run: npm test -- --coverage
-      
+
       # 6. Organizar reporte de cobertura
       - name: Organizar reporte
         if: always()
@@ -54,3 +55,34 @@ jobs:
           name: test-coverage-${{ github.run_id }}
           path: reports/
           retention-days: 7
+
+      # 8. Análisis de calidad con SonarQube
+      - name: SonarQube Scan
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+        uses: SonarSource/sonarqube-scan-action@v8.3.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  # Análisis de seguridad con GitHub CodeQL
+  security-analysis:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      # 1. Checkout del código
+      - name: Checkout del repositorio
+        uses: actions/checkout@v5
+
+      # 2. Configuración de CodeQL
+      - name: Inicializar CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: javascript-typescript
+          build-mode: none
+
+      # 3. Análisis de vulnerabilidades
+      - name: Ejecutar CodeQL
+        uses: github/codeql-action/analyze@v4
